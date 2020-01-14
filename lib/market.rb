@@ -32,8 +32,6 @@ class Market
     end
     market_items.flatten.sort.uniq
   end
-  # vendor.inventory = hash of items and amount
-
 
   def total_inventory
     market_inventory = {}
@@ -49,7 +47,29 @@ class Market
     market_inventory
   end
 
+  def enough?(item, quantity)
+    total_inventory.any? do |thing, amount|
+      thing == item && amount >= quantity
+    end
   end
+
+  def sell(item, amount)
+    return false if enough?(item, amount) == false
+    @vendors.each do |vendor|
+      amount_needed = amount
+      vendor.inventory.each do |i_item, inv_amount|
+        if item ==i_item && inv_amount > amount
+          vendor.inventory[i_item] -= amount_needed
+        elsif item == i_item && inv_amount <= amount
+          amount_needed -= inv_amount
+          vendor.inventory[i_item] = 0
+        end
+      end
+    end
+    true
+  end
+
+end
 
 
 
