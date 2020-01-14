@@ -45,4 +45,18 @@ class MarketTest<Minitest::Test
     assert_equal ([@vendor1, @vendor3]), @market.vendors_that_sell(@item1)
     assert_equal ([@vendor2]), @market.vendors_that_sell(@item4)
   end
+
+  def test_it_can_sort_items_from_all_vendors_alphabetically_and_can_list_quantities
+    @vendor1.stock(@item1, 35)
+    @vendor1.stock(@item2, 7)
+    @vendor2.stock(@item4, 50)
+    @vendor2.stock(@item3, 25)
+    @vendor3.stock(@item1, 65)
+    @market.add_vendor(@vendor1)
+    @market.add_vendor(@vendor2)
+    @market.add_vendor(@vendor3)
+    assert_equal (["Banana Nice Cream", "Peach", "Peach-Raspberry Nice Cream", "Tomato"]),
+    @market.sorted_item_list
+    assert_equal ({@item4=>50, @item1=>100, @item3=>25, @item2=>7}), @market.total_inventory
+  end
 end
